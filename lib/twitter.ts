@@ -1,4 +1,3 @@
-// API Fetching Functions
 import type { Tweet, TwitterUser } from "@/types/twitter";
 
 const TWITTER_API_URL = "https://api.twitter.com/2";
@@ -13,15 +12,14 @@ async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
     });
 
     if (response.status === 429) {
-      // Handle Rate Limit (Retry-After Header)
       const retryAfter = response.headers.get("Retry-After");
       const waitTime = retryAfter
         ? parseInt(retryAfter) * 1000
-        : (i + 1) * 2000; // Exponential backoff
+        : (i + 1) * 2000;
       console.warn(`Rate limit hit. Retrying in ${waitTime / 1000}s...`);
       await new Promise((resolve) => setTimeout(resolve, waitTime));
     } else {
-      return response; // Success or other error
+      return response;
     }
   }
   throw new Error(`Failed to fetch after ${retries} retries`);
@@ -93,7 +91,7 @@ export async function fetchAllUserTweets(
     return allTweets;
   } catch (error) {
     console.error("Error fetching all tweets:", error);
-    return allTweets; // Return partial results if available
+    return allTweets;
   }
 }
 
